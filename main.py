@@ -20,12 +20,12 @@ def obtener_profesiones():
     conn.close()
     return jsonify(resultado)
 
-# Obtener una profesión por ID
-@app.route("/api/profesiones/<int:id>", methods=["GET"])
-def obtener_profesion_por_id(id):
+# Obtener una profesión por nombreProf
+@app.route("/api/profesiones/<string:nombreProf>", methods=["GET"])
+def obtener_profesion_por_nombre(nombreProf):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM profesionesdb WHERE id = %s", (id,))
+    cursor.execute("SELECT * FROM profesionesdb WHERE nombreProf = %s", (nombreProf,))
     resultado = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -62,9 +62,9 @@ def crear_profesion():
 
     return jsonify({"mensaje": "Profesión creada", "id": nuevo_id}), 201
 
-# Actualizar una profesión existente
-@app.route("/api/profesiones/<int:id>", methods=["PUT"])
-def actualizar_profesion(id):
+# Actualizar una profesión existente por nombreProf
+@app.route("/api/profesiones/<string:nombreProf>", methods=["PUT"])
+def actualizar_profesion(nombreProf):
     datos = request.get_json()
     conn = get_connection()
     cursor = conn.cursor()
@@ -72,14 +72,14 @@ def actualizar_profesion(id):
     query = """
         UPDATE profesionesdb
         SET idProf = %s, nombreProf = %s, descripccion = %s, Fecha = %s
-        WHERE id = %s
+        WHERE nombreProf = %s
     """
     valores = (
         datos.get("idProf"),
         datos.get("nombreProf"),
         datos.get("descripccion"),
         datos.get("Fecha"),
-        id
+        nombreProf
     )
 
     cursor.execute(query, valores)
@@ -89,12 +89,12 @@ def actualizar_profesion(id):
 
     return jsonify({"mensaje": "Profesión actualizada"})
 
-# Eliminar una profesión
-@app.route("/api/profesiones/<int:id>", methods=["DELETE"])
-def eliminar_profesion(id):
+# Eliminar una profesión por nombreProf
+@app.route("/api/profesiones/<string:nombreProf>", methods=["DELETE"])
+def eliminar_profesion(nombreProf):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM profesionesdb WHERE nombreProf = %s", (id,))
+    cursor.execute("DELETE FROM profesionesdb WHERE nombreProf = %s", (nombreProf,))
     conn.commit()
     cursor.close()
     conn.close()
