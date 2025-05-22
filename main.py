@@ -31,6 +31,18 @@ def obtener_profesion_por_idProf(idProf):
     conn.close()
     return jsonify(resultado or {})
 
+
+# Obtener una profesión por nombreProf
+@app.route("/api/profesiones/<string:nombreProf>", methods=["GET"])
+def obtener_profesion_por_nombreProf(nombreProf):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM profesionesdb WHERE nombreProf = %s", (nombreProf,))
+    resultado = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return jsonify(resultado or {})
+
 # Crear una nueva profesión
 @app.route("/api/profesiones", methods=["POST"])
 def crear_profesion():
