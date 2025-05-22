@@ -7,14 +7,14 @@ app = Flask(__name__)
 # Ruta raíz
 @app.route("/")
 def home():
-    return "¡Microservicio de profesiones en Flask funcionando!"
+    return "¡Microservicio de profesiones funcionando!"
 
 # Obtener todas las profesiones
 @app.route("/api/profesiones", methods=["GET"])
 def obtener_profesiones():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM profesiones")
+    cursor.execute("SELECT * FROM profesionesdb")
     resultado = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -25,7 +25,7 @@ def obtener_profesiones():
 def obtener_profesion_por_id(id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM profesiones WHERE id = %s", (id,))
+    cursor.execute("SELECT * FROM profesionesdb WHERE id = %s", (id,))
     resultado = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -39,12 +39,12 @@ def crear_profesion():
     cursor = conn.cursor()
 
     # Obtener el siguiente ID manual
-    cursor.execute("SELECT MAX(id) FROM profesiones")
+    cursor.execute("SELECT MAX(id) FROM profesionesdb")
     max_id = cursor.fetchone()[0]
     nuevo_id = 1 if max_id is None else max_id + 1
 
     query = """
-        INSERT INTO profesiones (id, idProf, nombreProf, descripccion, Fecha)
+        INSERT INTO profesionesdb (id, idProf, nombreProf, descripccion, Fecha)
         VALUES (%s, %s, %s, %s, %s)
     """
     valores = (
@@ -70,7 +70,7 @@ def actualizar_profesion(id):
     cursor = conn.cursor()
 
     query = """
-        UPDATE profesiones
+        UPDATE profesionesdb
         SET idProf = %s, nombreProf = %s, descripccion = %s, Fecha = %s
         WHERE id = %s
     """
@@ -94,7 +94,7 @@ def actualizar_profesion(id):
 def eliminar_profesion(id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM profesiones WHERE id = %s", (id,))
+    cursor.execute("DELETE FROM profesionesdb WHERE id = %s", (id,))
     conn.commit()
     cursor.close()
     conn.close()
