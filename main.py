@@ -32,12 +32,12 @@ def obtener_profesion_por_idProf(idProf):
     return jsonify(resultado or {})
 
 
-# Obtener una profesión por nombreProf
-@app.route("/api/profesiones/<string:nombreProf>", methods=["GET"])
-def obtener_profesion_por_nombreProf(nombreProf):
+# Obtener una profesión por FolioPersonaIne
+@app.route("/api/profesiones/<string:FolioPersonaIne>", methods=["GET"])
+def obtener_profesion_por_FolioPersonaIne(FolioPersonaIne):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM profesionesdb WHERE nombreProf = %s", (nombreProf,))
+    cursor.execute("SELECT * FROM profesionesdb WHERE FolioPersonaIne = %s", (FolioPersonaIne,))
     resultado = cursor.fetchone()
     cursor.close()
     conn.close()
