@@ -1,0 +1,19 @@
+# Archivos de entorno y configuración local
+.env
+
+# Archivos de Python compilados
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Carpeta de entorno virtual (si usas virtualenv o venv)
+venv/
+env/
+
+# Archivos de logs
+*.log
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
