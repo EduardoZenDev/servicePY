@@ -20,12 +20,12 @@ def obtener_profesiones():
     conn.close()
     return jsonify(resultado)
 
-# Obtener una profesión por nombreProf
-@app.route("/api/profesiones/<string:nombreProf>", methods=["GET"])
-def obtener_profesion_por_nombre(nombreProf):
+# Obtener una profesión por idProf
+@app.route("/api/profesiones/<string:idProf>", methods=["GET"])
+def obtener_profesion_por_idProf(idProf):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM profesionesdb WHERE nombreProf = %s", (nombreProf,))
+    cursor.execute("SELECT * FROM profesionesdb WHERE idProf = %s", (idProf,))
     resultado = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -44,15 +44,16 @@ def crear_profesion():
     nuevo_id = 1 if max_id is None else max_id + 1
 
     query = """
-        INSERT INTO profesionesdb (id, idProf, nombreProf, descripccion, Fecha)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO profesionesdb (id, idProf, nombreProf, descripccion, Fecha, FolioPersonaIne)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """
     valores = (
         nuevo_id,
         datos.get("idProf"),
         datos.get("nombreProf"),
         datos.get("descripccion"),
-        datos.get("Fecha")
+        datos.get("Fecha"),
+        datos.get("FolioPersonaIne")
     )
 
     cursor.execute(query, valores)
@@ -62,24 +63,24 @@ def crear_profesion():
 
     return jsonify({"mensaje": "Profesión creada", "id": nuevo_id}), 201
 
-# Actualizar una profesión existente por nombreProf
-@app.route("/api/profesiones/<string:nombreProf>", methods=["PUT"])
-def actualizar_profesion(nombreProf):
+# Actualizar una profesión existente por idProf
+@app.route("/api/profesiones/<string:idProf>", methods=["PUT"])
+def actualizar_profesion(idProf):
     datos = request.get_json()
     conn = get_connection()
     cursor = conn.cursor()
 
     query = """
         UPDATE profesionesdb
-        SET idProf = %s, nombreProf = %s, descripccion = %s, Fecha = %s
-        WHERE nombreProf = %s
+        SET nombreProf = %s, descripccion = %s, Fecha = %s, FolioPersonaIne = %s
+        WHERE idProf = %s
     """
     valores = (
-        datos.get("idProf"),
         datos.get("nombreProf"),
         datos.get("descripccion"),
         datos.get("Fecha"),
-        nombreProf
+        datos.get("FolioPersonaIne"),
+        idProf
     )
 
     cursor.execute(query, valores)
@@ -89,18 +90,18 @@ def actualizar_profesion(nombreProf):
 
     return jsonify({"mensaje": "Profesión actualizada"})
 
-# Eliminar una profesión por nombreProf
-@app.route("/api/profesiones/<string:nombreProf>", methods=["DELETE"])
-def eliminar_profesion(nombreProf):
+# Eliminar una profesión por idProf
+@app.route("/api/profesiones/<string:idProf>", methods=["DELETE"])
+def eliminar_profesion(idProf):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM profesionesdb WHERE nombreProf = %s", (nombreProf,))
+    cursor.execute("DELETE FROM profesionesdb WHERE idProf = %s", (idProf,))
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"mensaje": "Profesión eliminada"})
 
-# Iniciar la aplicación localmente (Render usará gunicorn, no esto)
+# Iniciar localmente (no se usa en Render)
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
