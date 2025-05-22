@@ -94,7 +94,7 @@ def actualizar_profesion(id):
 def eliminar_profesion(id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM profesionesdb WHERE id = %s", (id,))
+    cursor.execute("DELETE FROM profesionesdb WHERE nombreProf = %s", (id,))
     conn.commit()
     cursor.close()
     conn.close()
